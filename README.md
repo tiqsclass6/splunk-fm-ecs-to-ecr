@@ -118,25 +118,25 @@ This guide covers:
 
 | 📄 **File** | 📝 **Description** |
 |------------|------------------|
-| 🔐 **[0-authentication.tf](YOUR_GITHUB_REPO_URL/0-authentication.tf)** | Configures AWS authentication references (profiles, credentials). |
-| 🌍 **[1-providers.tf](YOUR_GITHUB_REPO_URL/1-providers.tf)** | Defines AWS provider and global region settings. |
-| 🔧 **[2-variables.tf](YOUR_GITHUB_REPO_URL/2-variables.tf)** | Centralized variable definitions. |
-| 🌐 **[3-vpc.tf](YOUR_GITHUB_REPO_URL/3-vpc.tf)** | Creates the VPC, CIDR ranges, DNS hostnames, DNS support. |
-| 🛰️ **[4-subnets.tf](YOUR_GITHUB_REPO_URL/4-subnets.tf)** | Defines public and private subnets across AZs. |
-| 🚪 **[5-gateways.tf](YOUR_GITHUB_REPO_URL/5-gateways.tf)** | Creates Internet Gateway (IGW) and NAT Gateways. |
-| 🛣️ **[6-rtbs.tf](YOUR_GITHUB_REPO_URL/6-rtbs.tf)** | Route tables & associations for public/private subnets. |
-| 🛡️ **[7-sg-all.tf](YOUR_GITHUB_REPO_URL/7-sg-all.tf)** | Security groups (ALB, ECS instances, outbound rules). |
-| 📦 **[8-launch-template.tf](YOUR_GITHUB_REPO_URL/8-launch-template.tf)** | EC2 Launch Template incl. ECS agent config + user-data. |
-| 🎯 **[9-tg.tf](YOUR_GITHUB_REPO_URL/9-tg.tf)** | Target group for ALB (port 8000 + health checks). |
-| ⚖️ **[10-load-balancer.tf](YOUR_GITHUB_REPO_URL/10-load-balancer.tf)** | Application Load Balancer + listener config. |
-| 📊 **[11-cloudwatch.tf](YOUR_GITHUB_REPO_URL/11-cloudwatch.tf)** | CloudWatch log groups for ECS tasks. |
-| 📈 **[12-autoscaling-group.tf](YOUR_GITHUB_REPO_URL/12-autoscaling-group.tf)** | Auto Scaling Group for ECS EC2 instances. |
-| 🏗️ **[13a-ecs-cluster.tf](YOUR_GITHUB_REPO_URL/13a-ecs-cluster.tf)** | ECS Cluster configuration. |
-| 🔌 **[13b-ecs-cluster-capacity.tf](YOUR_GITHUB_REPO_URL/13b-ecs-cluster-capacity.tf)** | ECS capacity provider linked to ASG. |
-| 🚀 **[13c-ecs-service.tf](YOUR_GITHUB_REPO_URL/13c-ecs-service.tf)** | ECS Service with ALB integration. |
-| 📦 **[13d-ecs-task_definitions.tf](YOUR_GITHUB_REPO_URL/13d-ecs-task_definitions.tf)** | ECS Task Definitions defining Splunk container. |
-| 🔑 **[14-iam.tf](YOUR_GITHUB_REPO_URL/14-iam.tf)** | IAM instance role, task exec role, task role. |
-| 📤 **[15-outputs.tf](YOUR_GITHUB_REPO_URL/99-outputs.tf)** | Outputs DNS names, ARNs, IDs, LB URLs. |
+| 🔐 **[0-authentication.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/0-authentication.tf)** | Configures AWS authentication references (profiles, credentials). |
+| 🌍 **[1-providers.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/1-providers.tf)** | Defines AWS provider and global region settings. |
+| 🔧 **[2-variables.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/2-variables.tf)** | Centralized variable definitions. |
+| 🌐 **[3-vpc.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/3-vpc.tf)** | Creates the VPC, CIDR ranges, DNS hostnames, DNS support. |
+| 🛰️ **[4-subnets.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/4-subnets.tf)** | Defines public and private subnets across AZs. |
+| 🚪 **[5-gateways.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/5-gateways.tf)** | Creates Internet Gateway (IGW) and NAT Gateways. |
+| 🛣️ **[6-rtbs.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/6-rtbs.tf)** | Route tables & associations for public/private subnets. |
+| 🛡️ **[7-sg-all.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/7-sg-all.tf)** | Security groups (ALB, ECS instances, outbound rules). |
+| 📦 **[8-launch-template.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/8-launch-template.tf)** | EC2 Launch Template incl. ECS agent config + user-data. |
+| 🎯 **[9-tg.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/9-tg.tf)** | Target group for ALB (port 8000 + health checks). |
+| ⚖️ **[10-load-balancer.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/10-load-balancer.tf)** | Application Load Balancer + listener config. |
+| 📊 **[11-cloudwatch.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/11-cloudwatch.tf)** | CloudWatch log groups for ECS tasks. |
+| 📈 **[12-autoscaling-group.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/12-autoscaling-group.tf)** | Auto Scaling Group for ECS EC2 instances. |
+| 🏗️ **[13a-ecs-cluster.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/13a-ecs-cluster.tf)** | ECS Cluster configuration. |
+| 🔌 **[13b-ecs-cluster-capacity.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/13b-ecs-cluster-capacity.tf)** | ECS capacity provider linked to ASG. |
+| 🚀 **[13c-ecs-service.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/13c-ecs-service.tf)** | ECS Service with ALB integration. |
+| 📦 **[13d-ecs-task_definitions.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/13d-ecs-task_definitions.tf)** | ECS Task Definitions defining Splunk container. |
+| 🔑 **[14-iam.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/14-iam.tf)** | IAM instance role, task exec role, task role. |
+| 📤 **[15-outputs.tf](https://github.com/tiqsclass6/splunk-fm-ecs-to-ecr/blob/main/15-outputs.tf)** | Outputs DNS names, ARNs, IDs, LB URLs. |
 
 ---
 
