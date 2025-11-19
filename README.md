@@ -13,18 +13,9 @@
 
 ## 📌 Overview
 
-This repository provides a modular, production‑grade Terraform and automation framework to deploy **Splunk Enterprise on Amazon ECS (EC2 Launch Type)**.  
-The architecture emphasizes repeatability, clarity, automation, and enterprise DevOps standards.
+This repository provides a modular, production‑grade Terraform and automation framework to deploy **Splunk Enterprise on Amazon ECS (EC2 Launch Type)**. The architecture emphasizes repeatability, clarity, automation, and enterprise DevOps standards.
 
-This guide covers:
-
-- Architecture & components  
-- Terraform module breakdown  
-- Automation workflow  
-- Project structure  
-- Script reference  
-- Troubleshooting  
-- Author
+![diagram.png](/Screenshots/diagram.png)
 
 ---
 
@@ -105,8 +96,7 @@ This guide covers:
 │   ├── 14-iam.tf
 │   └── 15-outputs.tf
 │
-└── .gitignore
-│
+└── 🚫 .gitignore
 ├── 🐳 docker-compose.yaml
 ├── 📘 README.md
 └── 📗 USER_GUIDE.md
