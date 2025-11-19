@@ -1,0 +1,21 @@
+services:
+  splunk:
+    image: ${FULL_ECR_IMAGE:-866340886126.dkr.ecr.us-east-1.amazonaws.com/tiqsclass6/splunk-ecs-to-ecr/splunk:latest}
+    hostname: splunk
+    container_name: splunk
+    restart: unless-stopped
+    environment:
+      - SPLUNK_START_ARGS=--accept-license
+      - SPLUNK_PASSWORD=tiqs_pwd_1
+      - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
+    ports:
+      - "8000:8000"
+      - "8089:8089"
+      - "9997:9997"
+    volumes:
+      - splunk_data:/opt/splunk/var
+      - splunk_etc:/opt/splunk/etc
+
+volumes:
+  splunk_data:
+  splunk_etc:
