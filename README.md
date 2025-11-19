@@ -788,24 +788,6 @@ http://<alb_dns_name>
 
 ---
 
-### **3️⃣ Tear Down (Safe Workflow)**
-
-```bash
-./scripts/3-teardown.sh
-terraform destroy
-```
-
-![teardown.jpg](/Screenshots/teardown.jpg)
-![terraform-destroy.jpg](/Screenshots/terraform-destroy.jpg)
-
-The teardown script:
-
-- Deletes ECR repositories + images  
-- Optionally destroys docker-compose assets  
-- Prepares environment for a clean `terraform destroy`
-
----
-
 ## 📸 Screenshots (Show Your Work)
 
 - **AWS Elastic Container Registry (ECR)**
@@ -835,6 +817,24 @@ The teardown script:
 ![splunk-pt2.jpg](/Screenshots/splunk-pt2.jpg)
 ![splunk-pt3.jpg](/Screenshots/splunk-pt3.jpg)
 ![splunk-pt4.jpg](/Screenshots/splunk-pt4.jpg)
+
+---
+
+### **3️⃣ Tear Down (Safe Workflow)**
+
+```bash
+./scripts/3-teardown.sh
+terraform destroy
+```
+
+![teardown.jpg](/Screenshots/teardown.jpg)
+![terraform-destroy.jpg](/Screenshots/terraform-destroy.jpg)
+
+The teardown script:
+
+- Deletes ECR repositories + images  
+- Optionally destroys docker-compose assets  
+- Prepares environment for a clean `terraform destroy`
 
 ---
 
