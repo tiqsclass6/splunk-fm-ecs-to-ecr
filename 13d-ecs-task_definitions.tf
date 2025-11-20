@@ -47,7 +47,7 @@ resource "aws_ecs_task_definition" "splunk_task_definition" {
       environment = [
         {
           name  = "SPLUNK_PASSWORD"
-          value = "tiqs_pwd_1"
+          value = "<your_pw_here>"
         },
         {
           name  = "SPLUNK_START_ARGS"

@@ -1,5 +1,8 @@
 # USER GUIDE – Splunk on ECS (AWS Console–Only ClickOps Version)
 
+> [!WARNING]
+> This guide is still a work in progress. Not ready for primetime.
+
 ![AWS](https://img.shields.io/badge/AWS-Cloud-orange?logo=amazonaws)
 ![ECS](https://img.shields.io/badge/Amazon%20ECS-EC2%20Launch%20Type-blue?logo=amazonaws)
 ![ECR](https://img.shields.io/badge/Amazon%20ECR-Container%20Registry-red?logo=amazonaws)
@@ -22,240 +25,253 @@ No CLI. No Terraform. No local scripts. 100% ClickOps.
 
 ---
 
-## Step 1 – Create the VPC
+## Create a `docker-compose.yaml` file
 
-1. Go to **VPC → Your VPCs → Create VPC**
-2. Choose **VPC Only**
-3. Name: `splunk-ecs-vpc`
-4. CIDR: `10.240.0.0/16`
-5. Enable DNS hostnames & resolution  
-6. Click **Create**
-
----
-
-## Step 2 – Create Subnets
-
-Create **three public** and **three private** subnets.
-
-| Name | AZ | CIDR | Public? |
-|------|----|-------|---------|
-| public-a | us-east-1a | 10.240.1.0/24 | Yes |
-| public-b | us-east-1b | 10.240.2.0/24 | Yes |
-| public-c | us-east-1c | 10.240.3.0/24 | Yes |
-| private-a | us-east-1a | 10.240.11.0/24 | No |
-| private-b | us-east-1b | 10.240.12.0/24 | No |
-| private-c | us-east-1c | 10.240.13.0/24 | No |
-
-For public subnets:  
-**Actions → Edit subnet settings → Enable Auto-assign public IPv4**
-
----
-
-## Step 3 – Create Gateways
-
-### Internet Gateway
-
-1. VPC → Internet Gateways → Create
-2. Name: `splunk-igw`
-3. Attach to VPC
-
-### NAT Gateway
-
-1. VPC → NAT Gateway → Create
-2. Subnet: public-a
-3. EIP: Allocate new
-4. Name: `splunk-nat`
-
-### Elastic IP
-
-1. VPC → Elastic IPs → Allocate new
-2. Name: `splunk-eip`
-3. Public
-
----
-
-## Step 4 – Create Route Tables
-
-### Public Route Table
-
-- Name: `splunk-public-rtb`
-- Associate: public-a, public-b
-- Add route:  
-  `0.0.0.0/0 → Internet Gateway`
-
-### Private Route Table
-
-- Name: `splunk-private-rtb`
-- Associate: private-a, private-b
-- Add route:  
-  `0.0.0.0/0 → NAT Gateway`
-
----
-
-## Step 5 – Create Security Groups
-
-## ALB Security Group
-
-Name: `splunk-alb-sg`  
-Inbound:
-
-- HTTP 80 from anywhere (0.0.0.0/0)
-
-## ECS Instance Security Group
-
-Name: `splunk-ecs-sg`  
-Inbound:
-
-- TCP 8000 from **splunk-alb-sg**
-
-Outbound: allow all.
-
----
-
-## Step 6 – Create Application Load Balancer
-
-Navigate: **EC2 → Load Balancers → Create Load Balancer**
-
-- Type: **Application Load Balancer**
-- Name: `splunk-alb`
-- Internet-facing
-- Subnets: public-a, public-b, public-c
-- Security group: `splunk-alb-sg`
-
-### Target Group
-
-- Name: `splunk-tg`
-- Target type: instance
-- Protocol: HTTP
-- Port: 8000
-- Health check path: `/`
-
----
-
-## Step 7 – Create Launch Template
-
-### **EC2 → Launch Templates → Create template**
-
-- Name: `splunk-ecs-lt`
-- AMI: **Amazon Linux 2023 ECS-Optimized**
-- Instance: m6.xlarge
-- Security group: `splunk-ecs-sg`
-- IAM Role: **EC2 Container Service role**
-- User data:
-
-```bash
-#!/bin/bash
-echo "ECS_CLUSTER=splunk-cluster" >> /etc/ecs/ecs.config
+```yaml
+    services:
+      splunk:
+        image: splunk/splunk:latest
+        hostname: splunk-enterprise
+        environment:
+          SPLUNK_START_ARGS=--accept-license --no-prompt
+          SPLUNK_PASSWORD=<your_pw_here>
+          SPLUNK_LICENSE_URI=/run/secrets/splunk_license
+        ports:
+          - "8000:8000" # Splunk Web UI
+          - "8088:8088" # HEC (HTTP Event Collector)
+          - "8089:8089" # Management port
+        volumes:
+          - splunk_data:/opt/splunk/var
+          - splunk_etc:/opt/splunk/etc
+    volumes:
+      splunk_data:
+      splunk_etc:
 ```
 
 ---
 
-## Step 8 – Create Auto Scaling Group
+## Start-up Docker Desktop
 
-Navigate: **EC2 → Auto Scaling Groups → Create**
+- **Initialize and Run  Docker Compose**
 
-- Name: `splunk-asg`
-- Launch Template: `splunk-ecs-lt`
-- Network: splunk-ecs-vpc
-- Subnets: private-a, private-b
-- Desired/min/max: 1/1/1
-- Attach to target group: `splunk-tg`
+  ```bash
+  docker login
+  docker compose up -d
+  ```
 
----
-
-## Step 9 – Create ECS Cluster
-
-Navigate: **ECS → Clusters → Create**
-
-- Name: `splunk-cluster`
-- Infrastructure: **EC2 Linux + Networking**
+  ![docker-compose.jpg](/Screenshots/2-clickops/docker-compose.jpg)
 
 ---
 
-## Step 10 – Upload Splunk Image to ECR
+## Create Private Respository (AWS)
 
-Navigate: **ECR → Create repository**
+- Log into AWS
+- Go to Amazon ECR - Private Registry - Repositories
+- Click **Create Repository**
+![create-ecr-pt1.jpg](/Screenshots/2-clickops/create-ecr-pt1.jpg)
+- Repository name: `tiqsclass6/splunk_fm_ecr_to_ecs`
+- Image tag settings: **Mutable**
+- Mutable tag exclusions: *leave blank*
+![create-ecr-pt2.jpg](/Screenshots/2-clickops/create-ecr-pt2.jpg)
+- Encryption settings: **AES-256**
+- Click **Create**
+![create-ecr-pt3.jpg](/Screenshots/2-clickops/create-ecr-pt3.jpg)
+![create-ecr-pt4.jpg](/Screenshots/2-clickops/create-ecr-pt4.jpg)
+- Click on `tiqsclass6/splunk_fm_ecr_to_ecs`
+- Click **View push commands**
+![create-ecr-pt5.jpg](/Screenshots/2-clickops/create-ecr-pt5.jpg)
+- Click **Windows** tab at the top.
+![create-ecr-pt6.jpg](/Screenshots/2-clickops/create-ecr-pt6.jpg)
 
-Name:
+> [!TIP}
+> You do not need to execute step 2 because you ran docker compose.
+> Also at the beginning of Step 3, remove your repository name and add `splunk/splunk`
 
-```plaintext
-tiqsclass6/splunk-ecs-to-ecr/splunk
-```
+- **View Push Commands**
 
-Upload image via:
+  ```bash
+  aws ecr get-login-password --region us-east-1 | docker login --username AWS --password-stdin <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com
 
-- **Upload image** button  
-or  
-- Use the built-in "push commands" panel
+  docker tag splunk/splunk:latest <ACCOUNT_ID>.dkr.ecr.us-east-1-amazonaws.com/tiqsclass6/splunk_fm_ecr_to_ecs:latest
 
----
+  docker push <ACCOUNT_ID>.dkr.ecr.us-east-1.amazonaws.com/tiqsclass6/splunk_fm_ecr_to_ecs:latest
+  ```
 
-## Step 11 – Create Task Definition
-
-Navigate: **ECS → Task Definitions → Create**
-
-- Launch type: EC2
-- Name: `splunk-task`
-- Execution role: Create new
-- Add container:
-  - Name: `splunk`
-  - Image:  
-    `ACCOUNT_ID.dkr.ecr.REGION.amazonaws.com/tiqsclass6/splunk-ecs-to-ecr/splunk:latest`
-  - Port: 8000
-  - Memory: 4096
-  - CPU: 1024
-
----
-
-## Step 12 – Create ECS Service
-
-Navigate: **ECS → Cluster → Services → Create service**
-
-- Launch type: EC2
-- Task definition: `splunk-task`
-- Desired count: 1
-- Load balancer: Application Load Balancer
-- Target group: `splunk-tg`
-
-Wait for:
-
-- Running tasks = 1  
-- Status = STEADY  
+  ![docker-push-commands-pt1.jpg](/Screenshots/2-clickops/docker-push-commands-pt1.jpg)
+  ![docker-push-commands-pt2.jpg](/Screenshots/2-clickops/docker-push-commands-pt2.jpg)
 
 ---
 
-## Step 13 – Validate Deployment
+## Create ECS Cluster (AWS)
 
-Open ALB DNS:
+- Click *Create cluster*
+  ![create-cluster-pt1.jpg](/Screenshots/2-clickops/create-cluster-pt1.jpg)
+- Cluster name: `splunk-ecs`
+- Infrastructure:
+  - Uncheck **AWS Fargate**
+  - Check **Amazon EC2 instances**
+![create-cluster-pt2.jpg](/Screenshots/2-clickops/create-cluster-pt2.jpg)
 
-```plaintext
-http://<alb-dns-name>
-```
-
-Expected:
-
-- Splunk UI loads (may take 2–4 minutes on first boot)
+- Auto Scaling Group (ASG):
+  - Create new ASG
+  - Provisioning model: **On-demand**
+  - Container instance Amazon Machine Image (AMI): **Amazon Linux 2023**
+  - EC2 instance type: **c7i-flex.large**
+  - EC2 instance role: **ec2-to-ecr**
+  - Desired capacity:
+    - **Minimum**: `1`
+    - **Maximum**: `2`
+- Network Settings for Amazon EC2 instances
+  - Create new VPC
+  - Resources to create: **VPC and more**
+  - VPC name: `splunk`
+  - IPv4 CIDR Block: `10.240.0.0/16`
+  - IPv6 CIDR Block: **No IPv6 CIDR Block
+- Number of Availability Zones (AZ's): `2`
+  - Customize AZs: *Set your availability zones*
+- Number of Public subnets: `2`
+- Number of Private subnets: `2`
+- Customize subnets CIDR blocks:
+  - Public subnet #1: `10.240.1.0/24`
+  - Public subnet #2: `10.240.2.0/24`
+  - Private subnet #1: `10.240.11.0/24`
+  - Private subnet #2: `10.240.12.0/24`
+- NAT Gateway: **In 1 AZ**
+- VPC Endpoints: **None*
+- DNS options:
+  - Enable DNS hostnames: *Checked*
+  - Enable DNS resolution: *Checked*
+- Create VPC
+- Refresh your VPC section. Choose `splunk-vpc`
+- Subnets: `Keep all four (4) subnets: Two Public and Two Private
+- Security Group:
+  - Create an Security Group
+  - Security group name: `splunk-sg`
+  - Security group description: `Splunk Security Group for ECS`
+  - Inbound rules for security groups:
+    - Type: **Custom TCP**
+    - Protocol: **TCP**
+    - Port range: `8000`
+    - Source: **Custom**
+    - `splunk-alb-sg`
+- Auto-assign public IP: *Use subnet setting*
+- Monitoring:
+  - Container Insights: **Container Insights with enhanced observability**
+  - ECS Exec encryption and logging: *leave blank*
+  - Logging for ECS Exec: *Default*
+- Click **Create**
 
 ---
 
-## Step 14 – Teardown
+## Create a Splunk Load Balancer Security Group
 
-Delete in this order:
+- Security Group name: `splunk-alb-sg`
+- Description: `splunk-alb-sg`
+- VPC: **splunk-vpc**
+- Inbound Rules:
+  - Type: HTTP
+  - Protocol: TCP
+  - Port range: `80`
+  - Source: Anywhere IPv4
+  - `0.0.0.0/0`
+  - Description - optional: `HTTP`
+- Click **Create security group**
 
-1. ECS Service  
-2. ECS Cluster  
-3. Auto Scaling Group  
-4. Launch Template  
-5. EC2 Instances  
-6. Load Balancer  
-7. Target Group  
-8. ECR Repository  
-9. Security Groups  
-10. NAT Gateway  
-11. Internet Gateway  
-12. Route Tables  
-13. Subnets  
-14. VPC  
+---
+
+## Create Task Definition
+
+- Task definition family: `splunk-task-df`
+- Infrastructure requirements:
+  - Launch type: Amazon EC2 instances *Checked*
+  - OS, Architecture, Network Mode: *Leave as default*
+  - Task size: *Leave as default*
+  - Take role: **ec2TaskExecutionRole**
+  - Task execution role: **ec2TaskExecutionRole**
+- Task placement: *Leave blank*
+- Fault injection: *Leave blank*
+- Container:
+  - Name: `splunk-container`
+  - Image URI: Browse files and choose **namespace/splunk_fm_ecr_to_ecs**
+    - Click on **latest** image.
+    - Select image by: Image digest
+  - Private registry: *Leave unchecked*
+  - Port mappings:
+    - Container port: `8000` / Protocol: **TCP** / Port name: `splunk` / App protocol: **HTTP**
+    - Container port: `8088` / Protocol: **TCP** / Port name: `splunk-hec` / App protocol: **HTTP**
+    - Container port: `8089` / Protocol: **TCP** / Port name: `splunk-mgmt` / App protocol: **HTTP**
+  - Environment variables:
+    - Key: SPLUNK_START_ARGS / Value type: Value / Value: `--accept-license --no-prompt`
+    - Key: SPLUNK_PASSWORD: / Value type: Value / Value: `tiqs_pwd_1`
+    - Key: SPLUNK_GENERAL_TERMS / Value type: Value / Value: `--accept-sgt-current-at-splunk-com`
+  - *Leave everything else as default*
+  - Click **Create**
+
+## Create ECS Service
+
+- Click on `splunk-ecs-df` task definition click **Deploy** then select **Create service**.
+- Service details:
+  - Task definition family: *splunk-task-df*
+  - Task definition revision: *1*
+  - Service name: `splunk-ecs-svc`
+- Environment:
+  - Existing cluster: **splunk-ecs-df**
+  - Compute options: **capacity provider strategy**
+  - Capacity provider strategy: **Use cluster default**
+  - Troubleshooting configuration (recommended): *leave as default*
+- Deployment configuration:
+  - Scheduling strategy: **Replica**
+  - Desired tasks: 1
+  - Availability Zone rebalancing: **Turn on Availability Zone rebalancing**
+  - Health check grace period: 120
+- Networking:
+  - VPC: `splunk-vpc`
+  - Subnets: **Use public subnets only!!!**
+  - Security group: `splunk-sg`
+- Load balancing:
+  - Load balancer type: Application Load Balancer
+  - Container: *leave as default*
+  - Application Load Balancer: Create new load balancer
+  - Load balancer name: `splunk-alb`
+  - Listener: Create new listener
+    - Port: 80
+    - Protocol: HTTP
+  - Target Group: Create new target group
+    - Target group name: `splunk-alb-tg`
+    - Protocol: HTTP
+    - Port: 80
+    - Deregistration delay: 300
+    - Health check protocol: HTTP
+    - Health check path: `/`
+- Service auto scaling (optional):
+  - Use service auto scaling: **Checked**
+  - Minimum number of tasks: `1`
+  - Maximum number of tasks: `2`
+  - Scaling target type: Target tracking
+  - Policy name: `splunk-asg-policy`
+  - ECS service metric: **ECSServiceAverageCPUUtilization**
+  - Target value: 60
+  - Scale-out cooldown period: 300
+  - Scale-in cooldown period: 300
+- Click **Create**
+
+---
+
+## Go to EC2 - Load Balancers
+
+- Click on your load balancer
+- Copy the **DNS name** (will use this for your Splunk URL)
+
+---
+
+## Splunk Web UI
+
+- Username: `admin`
+- Password: `<insert_pwd_here>`
+
+---
+
+## Teardown
 
 ---
 

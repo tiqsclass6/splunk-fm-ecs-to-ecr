@@ -45,7 +45,7 @@ This repository provides a modular, production‑grade Terraform and automation 
 ```plaintext
 📦 splunk-ecs-terraform/
 │
-├── 📂 Screenshots/
+├── 📂 Screenshots/1-terraform
 │   ├── aws-ecr-pt1.jpg
 │   ├── aws-ecr-pt2.jpg
 │   ├── aws-ecs-cluster-pt1.jpg
@@ -743,8 +743,8 @@ This step prepares the Splunk image in Amazon ECR.
 ./scripts/1-docker-compose.sh
 ```
 
-![docker-compose-pt1.jpg](/Screenshots/docker-compose-pt1.jpg)
-![docker-compose-pt2.jpg](/Screenshots/docker-compose-pt2.jpg)
+![docker-compose-pt1.jpg](/Screenshots/1-terraform/docker-compose-pt1.jpg)
+![docker-compose-pt2.jpg](/Screenshots/1-terraform/docker-compose-pt2.jpg)
 
 This script:
 
@@ -764,8 +764,8 @@ terraform plan
 terraform apply
 ```
 
-![terraform-init-validate.jpg](/Screenshots/terraform-init-validate.jpg)
-![terraform-plan.jpg](/Screenshots/terraform-plan.jpg)
+![terraform-init-validate.jpg](/Screenshots/1-terraform/terraform-init-validate.jpg)
+![terraform-plan.jpg](/Screenshots/1-terraform/terraform-plan.jpg)
 
 Terraform deploys:
 
@@ -784,39 +784,39 @@ Once the ECS tasks start, the ALB exposes Splunk UI at:
 http://<alb_dns_name>
 ```
 
-![terraform-apply.jpg](/Screenshots/terraform-apply.jpg)
+![terraform-apply.jpg](/Screenshots/1-terraform/terraform-apply.jpg)
 
 ---
 
 ## 📸 Screenshots (Show Your Work)
 
 - **AWS Elastic Container Registry (ECR)**
-![aws-ecr-pt1.jpg](/Screenshots/aws-ecr-pt1.jpg)
-![aws-ecr-pt2.jpg](/Screenshots/aws-ecr-pt2.jpg)
+![aws-ecr-pt1.jpg](/Screenshots/1-terraform/aws-ecr-pt1.jpg)
+![aws-ecr-pt2.jpg](/Screenshots/1-terraform/aws-ecr-pt2.jpg)
 
 - **AWS Elastic Container Service (ECS)**
-![aws-ecs-cluster-pt1.jpg](/Screenshots/aws-ecs-cluster-pt1.jpg)
-![aws-ecs-cluster-pt2.jpg](/Screenshots/aws-ecs-cluster-pt2.jpg)
-![aws-ecs-cluster-pt3.jpg](/Screenshots/aws-ecs-cluster-pt3.jpg)
-![aws-ecs-cluster-pt4.jpg](/Screenshots/aws-ecs-cluster-pt4.jpg)
-![aws-ecs-cluster-pt5.jpg](/Screenshots/aws-ecs-cluster-pt5.jpg)
-![aws-ecs-cluster-pt6.jpg](/Screenshots/aws-ecs-cluster-pt6.jpg)
+![aws-ecs-cluster-pt1.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt1.jpg)
+![aws-ecs-cluster-pt2.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt2.jpg)
+![aws-ecs-cluster-pt3.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt3.jpg)
+![aws-ecs-cluster-pt4.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt4.jpg)
+![aws-ecs-cluster-pt5.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt5.jpg)
+![aws-ecs-cluster-pt6.jpg](/Screenshots/1-terraform/aws-ecs-cluster-pt6.jpg)
 
 - **AWS CloudWatch**
-![cloudwatch-pt1.jpg](/Screenshots/cloudwatch-pt1.jpg)
-![cloudwatch-pt2.jpg](/Screenshots/cloudwatch-pt2.jpg)
+![cloudwatch-pt1.jpg](/Screenshots/1-terraform/cloudwatch-pt1.jpg)
+![cloudwatch-pt2.jpg](/Screenshots/1-terraform/cloudwatch-pt2.jpg)
 
 - **AWS EC2 Instances**
-![ec2-instances.jpg](/Screenshots/ec2-instances.jpg)
+![ec2-instances.jpg](/Screenshots/1-terraform/ec2-instances.jpg)
 
 ---
 
 ## 🟠 Splunk Web U/I
 
-![splunk-pt1.jpg](/Screenshots/splunk-pt1.jpg)
-![splunk-pt2.jpg](/Screenshots/splunk-pt2.jpg)
-![splunk-pt3.jpg](/Screenshots/splunk-pt3.jpg)
-![splunk-pt4.jpg](/Screenshots/splunk-pt4.jpg)
+![splunk-pt1.jpg](/Screenshots/1-terraform/splunk-pt1.jpg)
+![splunk-pt2.jpg](/Screenshots/1-terraform/splunk-pt2.jpg)
+![splunk-pt3.jpg](/Screenshots/1-terraform/splunk-pt3.jpg)
+![splunk-pt4.jpg](/Screenshots/1-terraform/splunk-pt4.jpg)
 
 ---
 
@@ -827,8 +827,8 @@ http://<alb_dns_name>
 terraform destroy
 ```
 
-![teardown.jpg](/Screenshots/teardown.jpg)
-![terraform-destroy.jpg](/Screenshots/terraform-destroy.jpg)
+![teardown.jpg](/Screenshots/1-terraform/teardown.jpg)
+![terraform-destroy.jpg](/Screenshots/1-terraform/terraform-destroy.jpg)
 
 The teardown script:
 
