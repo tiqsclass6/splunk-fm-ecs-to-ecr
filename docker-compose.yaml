@@ -6,7 +6,7 @@ services:
     restart: unless-stopped
     environment:
       - SPLUNK_START_ARGS=--accept-license
-      - SPLUNK_PASSWORD=tiqs_pwd_1
+      - SPLUNK_PASSWORD=<your-pwd-here>
       - SPLUNK_GENERAL_TERMS=--accept-sgt-current-at-splunk-com
     ports:
       - "8000:8000"
